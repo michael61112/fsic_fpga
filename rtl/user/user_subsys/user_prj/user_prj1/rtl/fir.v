@@ -100,11 +100,11 @@ module fir
 	wire [(pADDR_WIDTH-1):0] tap_addr_r;
 	wire [(pADDR_WIDTH-1):0] fir_addr_r;
 
-	assign tap_WE = (wvalid & wready & awaddr[6]) ? 4'hf : 4'h0;
+	assign tap_WE = (wvalid & wready & config_write_address[6]) ? 4'hf : 4'h0;
 	assign tap_EN = config_write_address[6] | config_read_address[6];
 	assign tap_Di = wdata;
 	assign tap_A = (!tap_EN) ? 12'b0 :
-					(&tap_WE) ? {6'b0, config_write_address[5:0]} : 
+					(&tap_WE) ? {6'b0, config_write_address[5:0]} :
 					(fir_start) ? tap_addr_r : {6'b0, config_read_address[5:0]};
 
 	assign rdata = (config_read_address[6]) ? tap_Do :

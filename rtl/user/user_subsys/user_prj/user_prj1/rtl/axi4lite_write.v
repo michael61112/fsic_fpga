@@ -38,7 +38,7 @@ module axi4lite_write
 	assign awready = (awready_temp) ? 1'b1 : 1'b0;
 	assign wready = (wready_temp) ? 1'b1 : 1'b0;
 
-	assign config_write_address = awaddr;
+	assign config_write_address = (awvalid & awready) ? awaddr : config_write_address;
 	assign config_write_data = config_write_data_temp;
 
 	always@(negedge axis_clk or negedge axis_rst_n) begin
