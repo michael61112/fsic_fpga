@@ -26,5 +26,14 @@
 ../../user_subsys/user_prj/user_prj0/rtl/concat_EdgeDetect_Top_fsic.v
 ../../user_subsys/user_prj/user_prj0/rtl/spram.v
 ../../user_subsys/user_prj/user_prj1/rtl/user_prj1.v
+../../user_subsys/user_prj/user_prj1/rtl/address_gen.v
+../../user_subsys/user_prj/user_prj1/rtl/ap_fsm.v
+../../user_subsys/user_prj/user_prj1/rtl/axi4lite_read.v
+../../user_subsys/user_prj/user_prj1/rtl/axi4lite_write.v
+../../user_subsys/user_prj/user_prj1/rtl/bram11.v
+../../user_subsys/user_prj/user_prj1/rtl/data_ram_axi4stream.v
+../../user_subsys/user_prj/user_prj1/rtl/fir.v
+../../user_subsys/user_prj/user_prj1/rtl/mac.v
+
 ../../user_subsys/user_prj/user_prj2/rtl/user_prj2.v
 ../../user_subsys/user_prj/user_prj3/rtl/user_prj3.v
