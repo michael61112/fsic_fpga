@@ -433,7 +433,6 @@ FSIC #(
 
 		// test001();	//soc cfg write/read test
 		// test002();	//test002_fpga_axis_req
-		// test003();	//test003_fpga_to_soc_cfg_read
 		// test004();	//test004_fpga_to_soc_mail_box_write
 		// test005();	//test005_aa_mailbox_soc_cfg
 		// test006();	//test006_fpga_to_soc_cfg_write
@@ -1415,50 +1414,6 @@ FSIC #(
 		end
 	endtask
 
-	task test003;
-		//input [7:0] compare_data;
-
-		begin
-			for (i=0;i<CoreClkPhaseLoop;i=i+1) begin
-				$display("test003: fpga_cfg_read test - loop %02d", i);
-				fork 
-					soc_apply_reset(40+i*10, 40);			//change coreclk phase in soc
-					fpga_apply_reset(40,40);		//fix coreclk phase in fpga
-				join
-				
-				#40;
-				
-				fpga_as_to_is_init();	
-				
-				//soc_cc_is_enable=1;
-				fpga_cc_is_enable=1;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 1);				//ioserdes rxen
-					fpga_cfg_write(0,1,1,0);
-				join
-				$display($time, "=> soc rxen_ctl=1");
-				$display($time, "=> fpga rxen_ctl=1");
-
-				#400;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 3);				//ioserdes txen
-					fpga_cfg_write(0,3,1,0);
-				join
-				$display($time, "=> soc txen_ctl=1");
-				$display($time, "=> fpga txen_ctl=1");
-
-				#200;
-				fpga_as_is_tdata = 32'h5a5a5a5a;
-				#40;
-				#200;
-
-				test003_fpga_to_soc_cfg_read();
-
-				#200;
-			end
-		end
-	endtask
-
 	task fpga_as_to_is_init;
 		//input [7:0] compare_data;
 
@@ -1477,43 +1432,6 @@ FSIC #(
 			fpga_as_is_tvalid <= 0;
 			fpga_as_is_tready <= 1;
 			$display($time, "=> fpga_as_to_is_init done");
-		end
-	endtask
-
-	reg[31:0]idx2;
-
-	task test003_fpga_to_soc_cfg_read;		//target to io serdes
-		//input [7:0] compare_data;
-
-		//FPGA to SOC Axilite test
-		begin
-
-			@ (posedge fpga_coreclk);
-			fpga_as_is_tready <= 1;
-			
-			for(idx2=0; idx2<32/4; idx2=idx2+1)begin		//
-				//step 1. fpga issue cfg read request to soc
-				soc_to_fpga_axilite_read_cpl_expect_value = 32'h3;
-				fpga_axilite_read_req(FPGA_to_SOC_IS_BASE + idx2*4);
-					//read address = h0000_3000 ~ h0000_301F for io serdes
-				//step 2. fpga wait for read completion from soc
-				$display($time, "=> test003_fpga_to_soc_cfg_read :wait for soc_to_fpga_axilite_read_cpl_event");
-				@(soc_to_fpga_axilite_read_cpl_event);		//wait for fpga get the read cpl.
-				$display($time, "=> test003_fpga_to_soc_cfg_read : got soc_to_fpga_axilite_read_cpl_event");
-
-				$display($time, "=> test003_fpga_to_soc_cfg_read : soc_to_fpga_axilite_read_cpl_captured=%x", soc_to_fpga_axilite_read_cpl_captured);
-
-				//Data part
-				check_cnt = check_cnt + 1;
-				if ( soc_to_fpga_axilite_read_cpl_expect_value !== soc_to_fpga_axilite_read_cpl_captured) begin
-					$display($time, "=> test003_fpga_to_soc_cfg_read [ERROR] soc_to_fpga_axilite_read_cpl_expect_value=%x, soc_to_fpga_axilite_read_cpl_captured[27:0]=%x", soc_to_fpga_axilite_read_cpl_expect_value, soc_to_fpga_axilite_read_cpl_captured[27:0]);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test003_fpga_to_soc_cfg_read [PASS] soc_to_fpga_axilite_read_cpl_expect_value=%x, soc_to_fpga_axilite_read_cpl_captured[27:0]=%x", soc_to_fpga_axilite_read_cpl_expect_value, soc_to_fpga_axilite_read_cpl_captured[27:0]);
-				
-			end
-			$display($time, "=> test003_fpga_to_soc_cfg_read done");
 		end
 	endtask
 
