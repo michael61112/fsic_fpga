@@ -433,7 +433,6 @@ FSIC #(
 
 		// test001();	//soc cfg write/read test
 		// test002();	//test002_fpga_axis_req
-		// test005();	//test005_aa_mailbox_soc_cfg
 		// test006();	//test006_fpga_to_soc_cfg_write
 		// test007();	//test007_mailbox_interrupt test
 
@@ -811,47 +810,6 @@ FSIC #(
 		end
 	endtask
 
-	task test005;
-		begin
-			$display("test005: soc mail box cfg write/read test");
-
-			#100;
-			soc_apply_reset(40,40);
-			fpga_apply_reset(40,40);
-
-			#100;
-			
-			//soc_cc_is_enable=1;
-			fpga_cc_is_enable=1;
-
-			fpga_as_to_is_init();
-
-			fork 
-				soc_is_cfg_write(0, 4'b0001, 1);				//ioserdes rxen
-				fpga_cfg_write(0,1,1,0);
-			join
-			$display($time, "=> soc rxen_ctl=1");
-			$display($time, "=> fpga rxen_ctl=1");
-
-			#400;
-			fork 
-				soc_is_cfg_write(0, 4'b0001, 3);				//ioserdes txen
-				fpga_cfg_write(0,3,1,0);
-			join
-			$display($time, "=> soc txen_ctl=1");
-			$display($time, "=> fpga txen_ctl=1");
-
-			#200;
-			fpga_as_is_tdata = 32'h5a5a5a5a;
-		
-			#200;
-
-			test005_aa_mailbox_soc_cfg();
-			
-			#100;
-		end
-	endtask
-
 	task test001_is_soc_cfg;
 		begin
 			//Test offset 0x00 only for io serdes
@@ -1009,139 +967,6 @@ FSIC #(
 		end
 	endtask
 `endif
-
-	task test005_aa_mailbox_soc_cfg;
-		begin
-			//Test offset 0x00~0xff for mail box write to AA
-			$display("test005_aa_mailbox_soc_cfg: soc cfg read/write test - check soc cfg read value part");
-
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - start");
-			for (i=0;i<32'h20;i=i+4) begin
-
-				cfg_read_data_expect_value = 	32'ha5a5_a5a5;	
-				soc_aa_cfg_write(AA_MailBox_Reg_Offset + i, 4'b1111, cfg_read_data_expect_value);				
-				soc_aa_cfg_read(AA_MailBox_Reg_Offset + i, 4'b1111);
-
-				check_cnt = check_cnt + 1;
-				if (cfg_read_data_captured !== cfg_read_data_expect_value) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-					error_cnt = error_cnt + 1;
-				end
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-				$display("-----------------");
-			end
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - end");
-			$display("--------------------------------------------------------------------");
-
-			$display("test005_aa_mailbox_soc_cfg: soc cfg read/write test - check soc to fpga cfg write value part");
-
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - start");
-			for (i=0;i<32'h20;i=i+4) begin
-
-				soc_to_fpga_mailbox_write_addr_expect_value =  SOC_to_FPGA_MailBox_Base + i;				
-				soc_to_fpga_mailbox_write_addr_BE_expect_value = 4'b1111;
-				soc_to_fpga_mailbox_write_data_expect_value = 	32'ha5a5_a5a5;
-				soc_aa_cfg_write(AA_MailBox_Reg_Offset + i, soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_data_expect_value);
-				@ (soc_to_fpga_mailbox_write_event) ;		//wait for fpga get the mail box write from soc.
-				$display($time, "=> test005_aa_mailbox_soc_cfg : got soc_to_fpga_mailbox_write_event");
-
-				//Address part
-				check_cnt = check_cnt + 1;
-				if ( soc_to_fpga_mailbox_write_addr_expect_value !== soc_to_fpga_mailbox_write_addr_captured[27:0]) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_addr_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[27:0]=%x", soc_to_fpga_mailbox_write_addr_expect_value, soc_to_fpga_mailbox_write_addr_captured[27:0]);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_addr_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[27:0]=%x", soc_to_fpga_mailbox_write_addr_expect_value, soc_to_fpga_mailbox_write_addr_captured[27:0]);
-
-				//BE part
-				check_cnt = check_cnt + 1;
-				if ( soc_to_fpga_mailbox_write_addr_BE_expect_value !== soc_to_fpga_mailbox_write_addr_captured[31:28]) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_addr_BE_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[31:28]=%x", soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_addr_captured[31:28]);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_addr_BE_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[31:28]=%x", soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_addr_captured[31:28]);
-
-				//data part
-				check_cnt = check_cnt + 1;
-				if (soc_to_fpga_mailbox_write_data_expect_value !== soc_to_fpga_mailbox_write_data_captured) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_data_expect_value=%x, soc_to_fpga_mailbox_write_data_captured=%x", soc_to_fpga_mailbox_write_data_expect_value, soc_to_fpga_mailbox_write_data_captured);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_data_expect_value=%x, soc_to_fpga_mailbox_write_data_captured=%x", soc_to_fpga_mailbox_write_data_expect_value, soc_to_fpga_mailbox_write_data_captured);
-				$display("-----------------");
-			end
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - end");
-			$display("--------------------------------------------------------------------");
-
-			$display("test005_aa_mailbox_soc_cfg: soc cfg read/write test - check soc cfg read value part with random value");
-
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - start");
-			for (i=0;i<32'h20;i=i+4) begin
-
-				cfg_read_data_expect_value = 	$random;	
-				soc_aa_cfg_write(AA_MailBox_Reg_Offset + i, 4'b1111, cfg_read_data_expect_value);				
-				soc_aa_cfg_read(AA_MailBox_Reg_Offset + i, 4'b1111);
-
-				check_cnt = check_cnt + 1;
-				if (cfg_read_data_captured !== cfg_read_data_expect_value) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-				$display("-----------------");
-			end
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - end");
-			$display("--------------------------------------------------------------------");
-			$display("test005_aa_mailbox_soc_cfg: soc cfg read/write test - check soc to fpga cfg write value part with random value");
-
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - start");
-			for (i=0;i<32'h20;i=i+4) begin
-
-				soc_to_fpga_mailbox_write_addr_expect_value =  SOC_to_FPGA_MailBox_Base + i;				
-				soc_to_fpga_mailbox_write_addr_BE_expect_value = 4'b1111;
-				soc_to_fpga_mailbox_write_data_expect_value = 	$random;
-				soc_aa_cfg_write(i, soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_data_expect_value);
-				repeat(20) @(posedge fpga_coreclk);		//wait for fpga get the data by delay, 10T should be ok, i use 20T for better margin, TODO use event to snyc it or support pipeline test
-
-				//Address part
-				check_cnt = check_cnt + 1;
-				if ( soc_to_fpga_mailbox_write_addr_expect_value !== soc_to_fpga_mailbox_write_addr_captured[27:0]) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_addr_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[27:0]=%x", soc_to_fpga_mailbox_write_addr_expect_value, soc_to_fpga_mailbox_write_addr_captured[27:0]);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_addr_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[27:0]=%x", soc_to_fpga_mailbox_write_addr_expect_value, soc_to_fpga_mailbox_write_addr_captured[27:0]);
-
-				//BE part
-				check_cnt = check_cnt + 1;
-				if ( soc_to_fpga_mailbox_write_addr_BE_expect_value !== soc_to_fpga_mailbox_write_addr_captured[31:28]) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_addr_BE_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[31:28]=%x", soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_addr_captured[31:28]);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_addr_BE_expect_value=%x, soc_to_fpga_mailbox_write_addr_captured[31:28]=%x", soc_to_fpga_mailbox_write_addr_BE_expect_value, soc_to_fpga_mailbox_write_addr_captured[31:28]);
-
-				//data part
-				check_cnt = check_cnt + 1;
-				if (soc_to_fpga_mailbox_write_data_expect_value !== soc_to_fpga_mailbox_write_data_captured) begin
-					$display($time, "=> test005_aa_mailbox_soc_cfg [ERROR] soc_to_fpga_mailbox_write_data_expect_value=%x, soc_to_fpga_mailbox_write_data_captured=%x", soc_to_fpga_mailbox_write_data_expect_value, soc_to_fpga_mailbox_write_data_captured);
-					error_cnt = error_cnt + 1;
-				end	
-				else
-					$display($time, "=> test005_aa_mailbox_soc_cfg [PASS] soc_to_fpga_mailbox_write_data_expect_value=%x, soc_to_fpga_mailbox_write_data_captured=%x", soc_to_fpga_mailbox_write_data_expect_value, soc_to_fpga_mailbox_write_data_captured);
-				$display("-----------------");
-			end
-			$display("test005_aa_mailbox_soc_cfg: AA Mail Box read/write test - end");
-			$display("--------------------------------------------------------------------");
-
-			#100;
-		end
-	endtask
 
 	task test001_aa_internal_soc_cfg;
 		begin
