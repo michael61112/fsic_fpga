@@ -433,7 +433,6 @@ FSIC #(
 
 		// test001();	//soc cfg write/read test
 		// test002();	//test002_fpga_axis_req
-		// test006();	//test006_fpga_to_soc_cfg_write
 		// test007();	//test007_mailbox_interrupt test
 
 		fsic_system_initial();
@@ -1641,100 +1640,6 @@ FSIC #(
 		end
 	endtask
 `endif
-
-	task test006;
-		//input [7:0] compare_data;
-
-		begin
-			for (i=0;i<CoreClkPhaseLoop;i=i+1) begin
-				$display("test006: fpga to soc cfg write test - loop %02d", i);
-				fork 
-					soc_apply_reset(40+i*10, 40);			//change coreclk phase in soc
-					fpga_apply_reset(40,40);		//fix coreclk phase in fpga
-				join
-				
-				#40;
-				
-				fpga_as_to_is_init();	
-				
-				//soc_cc_is_enable=1;
-				fpga_cc_is_enable=1;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 1);				//ioserdes rxen
-					fpga_cfg_write(0,1,1,0);
-				join
-				$display($time, "=> soc rxen_ctl=1");
-				$display($time, "=> fpga rxen_ctl=1");
-
-				#400;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 3);				//ioserdes txen
-					fpga_cfg_write(0,3,1,0);
-				join
-				$display($time, "=> soc txen_ctl=1");
-				$display($time, "=> fpga txen_ctl=1");
-
-				#200;
-				fpga_as_is_tdata = 32'h5a5a5a5a;
-				#40;
-				#200;
-
-				test006_fpga_to_soc_cfg_write();
-
-				#200;
-			end
-		end
-	endtask
-
-	reg[31:0]idx6;
-
-	task test006_fpga_to_soc_cfg_write;		//target to AA internal register
-		//input [7:0] compare_data;
-
-		//FPGA to SOC Axilite test
-		begin
-
-			@ (posedge fpga_coreclk);
-			fpga_as_is_tready <= 1;
-			
-			//step 1. check default value
-			$display($time, "=> test006_fpga_to_soc_cfg_write - for AA_Internal_Reg default value check");
-			cfg_read_data_expect_value = 	32'h0;			//default value after reset = 0
-			soc_aa_cfg_read(AA_Internal_Reg_Offset, 4'b1111);
-
-			check_cnt = check_cnt + 1;
-			if (cfg_read_data_captured !== cfg_read_data_expect_value) begin
-				$display($time, "=> test006_fpga_to_soc_cfg_write [ERROR] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-				error_cnt = error_cnt + 1;
-			end	
-			else
-				$display($time, "=> test006_fpga_to_soc_cfg_write [PASS] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-			$display("-----------------");
-
-
-			//step 2. fpga issue fpga to soc cfg write request
-			@ (posedge fpga_coreclk);
-			cfg_read_data_expect_value = 	32'h1;	
-			fpga_axilite_write_req(FPGA_to_SOC_AA_BASE + AA_Internal_Reg_Offset , 4'b0001, cfg_read_data_expect_value);
-				//write address = h0000_2100 ~ h0000_2FFF for AA internal register
-			//step 3. fpga wait for write to soc
-			repeat(100) @ (posedge soc_coreclk);    //TODO fpga wait for write to soc
-			//fpga_is_as_data_valid();
-
-			soc_aa_cfg_read(AA_Internal_Reg_Offset, 4'b1111);
-
-			check_cnt = check_cnt + 1;
-			if (cfg_read_data_captured !== cfg_read_data_expect_value) begin
-				$display($time, "=> test006_fpga_to_soc_cfg_write [ERROR] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-				error_cnt = error_cnt + 1;
-			end	
-			else
-				$display($time, "=> test006_fpga_to_soc_cfg_write [PASS] cfg_read_data_expect_value=%x, cfg_read_data_captured=%x", cfg_read_data_expect_value, cfg_read_data_captured);
-			$display("-----------------");
-	
-			$display($time, "=> test006_fpga_to_soc_cfg_write done");
-		end
-	endtask
 
 	task fpga_axilite_write_req;
 		input [27:0] address;
