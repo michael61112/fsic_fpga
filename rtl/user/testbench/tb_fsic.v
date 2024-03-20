@@ -433,7 +433,6 @@ FSIC #(
 
 		// test001();	//soc cfg write/read test
 		// test002();	//test002_fpga_axis_req
-		// test004();	//test004_fpga_to_soc_mail_box_write
 		// test005();	//test005_aa_mailbox_soc_cfg
 		// test006();	//test006_fpga_to_soc_cfg_write
 		// test007();	//test007_mailbox_interrupt test
@@ -1311,66 +1310,6 @@ FSIC #(
                 soc_to_fpga_axis_event_triggered = 0;
 		end
 	end
-
-	task test004;
-		//input [7:0] compare_data;
-		begin
-			for (i=0;i<CoreClkPhaseLoop;i=i+1) begin
-				$display("test004: TX/RX test - loop %02d", i);
-				fork 
-					soc_apply_reset(40+i*10, 40);			//change coreclk phase in soc
-					fpga_apply_reset(40,40);		//fix coreclk phase in fpga
-				join
-				#40;
-				fpga_as_to_is_init();
-				//soc_cc_is_enable=1;
-				fpga_cc_is_enable=1;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 1);				//ioserdes rxen
-					fpga_cfg_write(0,1,1,0);
-				join
-				$display($time, "=> soc rxen_ctl=1");
-				$display($time, "=> fpga rxen_ctl=1");
-
-				#400;
-				fork 
-					soc_is_cfg_write(0, 4'b0001, 3);				//ioserdes txen
-					fpga_cfg_write(0,3,1,0);
-				join
-				$display($time, "=> soc txen_ctl=1");
-				$display($time, "=> fpga txen_ctl=1");
-
-				#200;
-				fpga_as_is_tdata = 32'h5a5a5a5a;
-				#40;
-				#200;
-
-				test004_fpga_to_soc_mail_box_write();		//target to AA
-				#200;
-			end
-		end
-	endtask
-
-	reg[31:0]idx1;
-
-	task test004_fpga_to_soc_mail_box_write;
-		//input [7:0] compare_data;
-
-		//FPGA to SOC Axilite test
-		begin
-			@ (posedge fpga_coreclk);
-			fpga_as_is_tready <= 1;
-			
-			for(idx1=0; idx1<32'h20/4; idx1=idx1+1)begin		//
-				fpga_axilite_write(FPGA_to_SOC_AA_BASE + AA_MailBox_Reg_Offset + idx1*4, 4'b1111, 32'h11111111 * idx1);
-				//mailbox supported range address = 0x0000_2000 ~ 0000_201F
-				//BE = 4'b1111
-				//data = 32'h11111111 * idx1
-			end
-
-			$display($time, "=> test004_fpga_to_soc_mail_box_write done");
-		end
-	endtask
 
 	task fpga_axilite_write;
 		input [27:0] address;
