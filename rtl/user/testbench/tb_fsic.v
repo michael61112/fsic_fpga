@@ -22,7 +22,8 @@
 //	reference https://blog.csdn.net/seabeam/article/details/41078023, the source is come from http://www.deepchip.com/items/0466-07.html
 //	 Not using #0 is a good guideline, except for event data types.  In Verilog, there is no way to defer the event triggering to the nonblocking event queue.
 `define USER_PROJECT_SIDEBAND_SUPPORT 1
-`define USE_EDGEDETECT_IP 1
+//`define USE_EDGEDETECT_IP 1
+`define USE_FIR_IP 1
 
 module tb_fsic #( parameter BITS=32,
 	`ifdef USER_PROJECT_SIDEBAND_SUPPORT
@@ -32,6 +33,10 @@ module tb_fsic #( parameter BITS=32,
 		parameter pUSER_PROJECT_SIDEBAND_WIDTH   = 0,
 		parameter pSERIALIO_WIDTH   = 12,
 	`endif
+	 `ifdef USE_FIR_IP
+		parameter Tape_Num    = 11,
+		parameter Data_Num    = 600,
+	 `endif
 	parameter pADDR_WIDTH   = 15,
 	parameter pDATA_WIDTH   = 32,
 	parameter IOCLK_Period	= 10,
@@ -39,6 +44,7 @@ module tb_fsic #( parameter BITS=32,
 	parameter SHIFT_DEPTH = 5,
 	parameter pRxFIFO_DEPTH = 5,
 	parameter pCLK_RATIO = 4
+
 	)
 (
 );
@@ -55,6 +61,7 @@ module tb_fsic #( parameter BITS=32,
 	localparam UP_BASE=32'h3000_0000;
 	localparam AA_BASE=32'h3000_2000;
 	localparam IS_BASE=32'h3000_3000;
+	localparam USER_PRJ_SEL=32'h3000_5000;
 
 	localparam SOC_to_FPGA_MailBox_Base=28'h000_2000;
 	localparam FPGA_to_SOC_UP_BASE=28'h000_0000;
@@ -124,7 +131,7 @@ module tb_fsic #( parameter BITS=32,
 	reg[31:0] i;
 	
 	reg[31:0] cfg_read_data_expect_value;
-	reg[31:0] cfg_read_data_captured;
+	reg signed [31:0] cfg_read_data_captured;
 	event soc_cfg_read_event;
 	
 	reg[27:0] soc_to_fpga_mailbox_write_addr_expect_value;
@@ -234,7 +241,7 @@ module tb_fsic #( parameter BITS=32,
 //	wire fpga_Serial_Data_Out_tid_tuser;	// tid and tuser	
 //	wire fpga_Serial_Data_Out_tlast_tvalid_tready;		//flowcontrol
 
-	wire [pDATA_WIDTH-1:0] fpga_is_as_tdata;
+	wire signed [pDATA_WIDTH-1:0] fpga_is_as_tdata;
 	`ifdef USER_PROJECT_SIDEBAND_SUPPORT
 		wire 	[pUSER_PROJECT_SIDEBAND_WIDTH-1:0] fpga_is_as_tupsb;
 	`endif
@@ -399,6 +406,10 @@ FSIC #(
 	assign mprj_io[TXCLK_OFFSET] = io_out[TXCLK_OFFSET];
 	assign mprj_io[TXD_OFFSET +: pSERIALIO_WIDTH] = io_out[TXD_OFFSET +: pSERIALIO_WIDTH];
 	
+	`ifdef USE_FIR_IP
+		reg signed [(pDATA_WIDTH-1):0] Din_list[0:(Data_Num-1)];
+		reg signed [(pDATA_WIDTH-1):0] golden_list[0:(Data_Num-1)];
+	`endif
     initial begin
 		ioclk_source=0;
         soc_resetb = 0;
@@ -420,27 +431,18 @@ FSIC #(
 		error_cnt = 0;
 		check_cnt = 0;
 
-		test001();	//soc cfg write/read test
-		test002();	//test002_fpga_axis_req
-		test003();	//test003_fpga_to_soc_cfg_read
-		test004();	//test004_fpga_to_soc_mail_box_write
-		test005();	//test005_aa_mailbox_soc_cfg
-		test006();	//test006_fpga_to_soc_cfg_write
-		test007();	//test007_mailbox_interrupt test
+		// test001();	//soc cfg write/read test
+		// test002();	//test002_fpga_axis_req
+		// test003();	//test003_fpga_to_soc_cfg_read
+		// test004();	//test004_fpga_to_soc_mail_box_write
+		// test005();	//test005_aa_mailbox_soc_cfg
+		// test006();	//test006_fpga_to_soc_cfg_write
+		// test007();	//test007_mailbox_interrupt test
 
-		#400;
-		$display("=============================================================================================");
-		$display("=============================================================================================");
-		$display("=============================================================================================");
-		if (error_cnt != 0 )  begin 
-			$display($time, "=> Final result [FAILED], check_cnt = %04d, error_cnt = %04d, please search [ERROR] in the log", check_cnt, error_cnt);
-		end
-		else
-			$display($time, "=> Final result [PASS], check_cnt = %04d, error_cnt = %04d", check_cnt, error_cnt);
-		$display("=============================================================================================");
-		$display("=============================================================================================");
-		$display("=============================================================================================");
-		
+		fsic_system_initial();
+		fir_init();
+		fir_test();
+
 		$finish;
     end
     
@@ -466,6 +468,187 @@ FSIC #(
 	end
 	
 	always #(ioclk_pd/2) ioclk_source = ~ioclk_source;
+
+	wire axis_clk;
+	assign axis_clk = fpga_coreclk;
+`ifdef USE_FIR_IP
+	integer k;
+    reg error;
+    reg status_error;
+	reg error_coef;
+
+    reg [31:0]  data_length;
+    integer Din, golden, input_data, golden_data, m, ii;
+	reg signed [31:0] coef[0:10]; // fill in coef
+
+	task fsic_system_initial;
+		begin
+			fork
+				soc_apply_reset(40, 40);	//change coreclk phase in soc
+				fpga_apply_reset(40,40);	//fix coreclk phase in fpga
+			join
+			#40;
+
+			test001_up_soc_cfg; //config again because of soc_apply_reset()
+
+			fpga_as_to_is_init();
+
+			//soc_cc_is_enable=1;
+			fpga_cc_is_enable=1;
+			fork
+				soc_is_cfg_write(0, 4'b0001, 1);	//ioserdes rxen
+				fpga_cfg_write(0,1,1,0);
+			join
+			$display($time, "=> soc rxen_ctl=1");
+			$display($time, "=> fpga rxen_ctl=1");
+
+			#400;
+			fork
+				soc_is_cfg_write(0, 4'b0001, 3);	//ioserdes txen
+				fpga_cfg_write(0,3,1,0);
+			join
+			$display($time, "=> soc txen_ctl=1");
+			$display($time, "=> fpga txen_ctl=1");
+
+			#200;
+			fpga_as_is_tdata = 32'h5a5a5a5a;
+			#40;
+			#200;
+		end
+	endtask
+
+	task fir_init;
+		begin
+			fir_read_data();
+
+			// Set user project is 1
+			cfg_read_data_expect_value = 32'h1;
+			set_user_prj('h0, 4'b0001, cfg_read_data_expect_value);
+
+			error_coef = 0;
+
+			$display("------------Start simulation-----------");
+
+			while(error_coef) begin
+				config_read_check(12'h00, 32'h00, 32'h0000_000f); // check idle = 0
+			end
+			$display("----Start the data_length coefficient input(AXI-lite)----");
+			config_write(12'h10, data_length);
+
+			$display("----Write tape coefficient input(AXI-lite)----");
+			for(k=0; k< Tape_Num; k=k+1) begin
+				config_write(12'h40+4*k, coef[k]);
+			end
+
+			$display(" Check Data Length ...");
+			config_read_check(12'h10, data_length, 32'hffffffff);
+
+			$display(" Check Coefficient ...");
+			for(k=0; k < Tape_Num; k=k+1) begin
+				config_read_check(12'h40+4*k, coef[k], 32'hffffffff);
+			end
+			$display("----End the coefficient input(AXI-lite)----");
+
+			$display("----Start initial Data BRAM default value(AXI-Stream)----");
+			for(ii=0;ii< 11;ii=ii+1) begin
+				ss(32'b0);
+			end
+
+			#200;
+		end
+	endtask
+
+	task fir_test;
+		begin
+			$display(" Start FIR");
+			@(posedge axis_clk) config_write(12'h00, 32'h0000_0001);    // ap_start = 1
+
+			$display("----Start the data input(AXI-Stream)----");
+			for(ii=0;ii< data_length;ii=ii+1) begin //(data_length-1)
+				ss(Din_list[ii]);
+				sm(golden_list[ii],ii);
+			end
+		end
+	endtask
+
+	task fir_read_data;
+        data_length = 0;
+        Din = $fopen("./samples_triangular_wave.dat","r");
+        golden = $fopen("./out_gold.dat","r");
+        for(m=0;m<Data_Num;m=m+1) begin
+            input_data = $fscanf(Din,"%d", Din_list[m]);
+            golden_data = $fscanf(golden,"%d", golden_list[m]);
+            data_length = data_length + 1;
+        end
+
+		coef[0]  =  32'd0;
+		coef[1]  = -32'd10;
+		coef[2]  = -32'd9;
+		coef[3]  =  32'd23;
+		coef[4]  =  32'd56;
+		coef[5]  =  32'd63;
+		coef[6]  =  32'd56;
+		coef[7]  =  32'd23;
+		coef[8]  = -32'd9;
+		coef[9]  = -32'd10;
+		coef[10] =  32'd0;
+	endtask
+
+//  Write config register by AXI-lite
+    task config_write;
+        input [11:0]    addr;
+        input [31:0]    data;
+        begin
+			soc_up_cfg_write(addr, 4'b1111, data);	// offset sel data
+        end
+    endtask
+
+//  Read config register by AXI-lite
+    task config_read_check;
+        input [11:0]        addr;
+        input signed [31:0] exp_data;
+        input [31:0]        mask;
+        begin
+			soc_up_cfg_read(addr, 4'b1111); // offset sel
+
+            if( (cfg_read_data_captured & mask) != (exp_data & mask)) begin
+                $display("ERROR: exp = %d, cfg_read_data_captured = %d", exp_data, cfg_read_data_captured);
+                error_coef <= 1;
+            end else begin
+                $display("OK: exp = %d, cfg_read_data_captured = %d", exp_data, cfg_read_data_captured);
+            end
+        end
+    endtask
+
+//  Send 32'b in1 value to slave by stream
+//  Leave while loop when ss_tready is high
+    task ss;
+        input  signed [31:0] in1;
+        begin
+			@ (posedge fpga_coreclk);
+			fpga_as_is_tready <= 1;
+			fpga_axis_req(in1, TID_DN_UP, 0); // data, target, mode
+        end
+    endtask
+
+//  Receive 32'b FIR data from slave by stream
+//  If the result does not match golden, set error high
+
+    task sm;
+        input  signed [31:0] in2; // golden data
+        input         [31:0] pcnt; // pattern count
+        begin
+            if (fpga_is_as_tdata != in2) begin //sm_tdata
+                $display("[ERROR] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, fpga_is_as_tdata); //sm_tdata
+                error <= 1;
+            end
+            else begin
+                $display("[PASS] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, fpga_is_as_tdata); //sm_tdata
+            end
+        end
+    endtask
+`endif
+
 //Willy debug - s
 
 	task test007;
@@ -1073,6 +1256,11 @@ FSIC #(
 	end
 
 
+	initial begin
+		$dumpfile("fsic.vcd");
+		$dumpvars(0, tb_fsic);
+	end
+
 	initial begin		//get upstream soc_to_fpga_axilite_read_completion
 		while (1) begin
 			@(posedge fpga_coreclk);
@@ -1612,7 +1800,7 @@ FSIC #(
 					@ (posedge fpga_coreclk);
 			end
 			fpga_as_is_tvalid <= 0;
-		
+
 		end
 	endtask
 `else
@@ -1745,12 +1933,13 @@ FSIC #(
 			fpga_as_is_tkeep <=  tkeep;
 			fpga_as_is_tlast <=  tlast;
 			fpga_as_is_tdata <= tdata;	//for axis write data
+/*
 			`ifdef USER_PROJECT_SIDEBAND_SUPPORT
 				$strobe($time, "=> fpga_axis_req send data, fpga_as_is_tupsb = %b, fpga_as_is_tstrb = %b, fpga_as_is_tkeep = %b, fpga_as_is_tlast = %b, fpga_as_is_tdata = %x", fpga_as_is_tupsb, fpga_as_is_tstrb, fpga_as_is_tkeep, fpga_as_is_tlast, fpga_as_is_tdata);
 			`else	
 				$strobe($time, "=> fpga_axis_req send data, fpga_as_is_tstrb = %b, fpga_as_is_tkeep = %b, fpga_as_is_tlast = %b, fpga_as_is_tdata = %x", fpga_as_is_tstrb, fpga_as_is_tkeep, fpga_as_is_tlast, fpga_as_is_tdata);
 			`endif
-			
+*/
 			fpga_as_is_tid <=  tid;		//set target
 			fpga_as_is_tuser <=  TUSER_AXIS;		//for axis req
 			fpga_as_is_tvalid <= 1;
@@ -1961,6 +2150,31 @@ FSIC #(
 		end
 	endtask
 
+	task set_user_prj;
+		input [11:0] offset;		//4K range
+		input [3:0] sel;
+		input [31:0] data;
+
+		begin
+			@ (posedge soc_coreclk);
+			wbs_adr <= USER_PRJ_SEL;
+			wbs_adr[11:2] <= offset[11:2];	//only provide DW address
+
+			wbs_wdata <= data;
+			wbs_sel <= sel;
+			wbs_cyc <= 1'b1;
+			wbs_stb <= 1'b1;
+			wbs_we <= 1'b1;
+
+			@(posedge soc_coreclk);
+			while(wbs_ack==0) begin
+				@(posedge soc_coreclk);
+			end
+
+			$display($time, "=> set user project : wbs_adr=%x, wbs_sel=%b, wbs_wdata=%x", wbs_adr, wbs_sel, wbs_wdata);
+		end
+	endtask
+
 	task soc_is_cfg_write;
 		input [11:0] offset;		//4K range
 		input [3:0] sel;
@@ -2077,7 +2291,7 @@ FSIC #(
 			wbs_cyc <= 1'b1;
 			wbs_stb <= 1'b1;
 			wbs_we <= 1'b1;	
-			
+
 			@(posedge soc_coreclk);
 			while(wbs_ack==0) begin
 				@(posedge soc_coreclk);
