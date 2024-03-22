@@ -44,7 +44,7 @@ module address_gen
 	reg mac_EN_temp;
 	reg result_ready_temp;
 	reg [(pADDR_WIDTH-1):0]		 tap_addr_r_temp;
-	reg [(pADDR_WIDTH-1):0] 		 fir_addr_r_temp;
+	reg [(pADDR_WIDTH-1):0] 		 fir_addr_r_temp=32'b0;
 	
 	always@(negedge axis_clk) begin
 		if (!axis_rst_n) begin

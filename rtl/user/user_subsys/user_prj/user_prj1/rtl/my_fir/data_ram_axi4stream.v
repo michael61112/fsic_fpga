@@ -73,9 +73,10 @@ module data_ram_axi4stream
 					else if (ss_tvalid) begin
 						state <= S1;
 					end
-					else if (sm_tready && ap_idle) begin
-						state <= S2;
-					end
+					//else if (sm_tready && ap_idle) begin
+					// else if (sm_tready && result_ready) begin
+					// 	state <= S2;
+					// end
 					else begin
 						state <= S0;
 					end
@@ -84,17 +85,20 @@ module data_ram_axi4stream
 					if(sm_fready) begin
 						state <= S3;
 					end
+					else if(result_ready && sm_tready) begin  //test
+						state <= S5;
+					end
 					else begin
 						state <= S0;
 					end
 				end
 				S2: begin
-					if (sm_tready && ap_idle) begin
-						state <= S2;
-					end
-					else begin
-						state <= S0;
-					end
+					// if (sm_tready && ap_idle) begin
+					// 	state <= S2;
+					// end
+					// else begin
+					 	state <= S0;
+					// end
 				end
 				S3: begin
 					if(sm_fready) begin
@@ -109,12 +113,13 @@ module data_ram_axi4stream
 				end
 
 				S5: begin
-					if(result_ready && sm_tready) begin
-						state <= S5;
-					end
-					else begin
-						state <= S0;
-					end
+					// if(result_ready && sm_tready) begin
+					// 	state <= S5;
+					// end
+					// else begin
+					// 	state <= S0;
+					// end
+					state <= S0;
 				end
 				default: begin
 					state <= S0;

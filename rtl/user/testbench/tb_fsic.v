@@ -131,7 +131,7 @@ module tb_fsic #( parameter BITS=32,
 	reg[31:0] i;
 	
 	reg[31:0] cfg_read_data_expect_value;
-	reg signed [31:0] cfg_read_data_captured;
+	reg [31:0] cfg_read_data_captured;
 	event soc_cfg_read_event;
 	
 	reg[27:0] soc_to_fpga_mailbox_write_addr_expect_value;
@@ -241,7 +241,7 @@ module tb_fsic #( parameter BITS=32,
 //	wire fpga_Serial_Data_Out_tid_tuser;	// tid and tuser	
 //	wire fpga_Serial_Data_Out_tlast_tvalid_tready;		//flowcontrol
 
-	wire signed [pDATA_WIDTH-1:0] fpga_is_as_tdata;
+	wire [pDATA_WIDTH-1:0] fpga_is_as_tdata;
 	`ifdef USER_PROJECT_SIDEBAND_SUPPORT
 		wire 	[pUSER_PROJECT_SIDEBAND_WIDTH-1:0] fpga_is_as_tupsb;
 	`endif
@@ -431,10 +431,7 @@ FSIC #(
 		error_cnt = 0;
 		check_cnt = 0;
 
-		fsic_system_initial();
-		fir_init();
-		fir_test();
-
+		run_fir_config_from_soc();
 		$finish;
     end
     
@@ -509,68 +506,101 @@ FSIC #(
 		end
 	endtask
 
-	task fir_init;
+	task run_fir_config_from_soc;
+		fsic_system_initial();
+		set_user_prj('h0, 4'b0001, 32'h1); // Set user project is 1
+		fir_read_data();
+		data_length = 64;
+		fir_config_from_soc();
+		soc_to_fpga_axis_captured_count = 0;
+		$display(" Start FIR");
+		@(posedge axis_clk) soc_up_config_write(12'h00, 32'h0000_0001);    // ap_start = 1
+		fir_send_data();
+		fir_wait_done();
+		fir_check_result();
+	endtask
+
+	task fir_config_from_soc;
 		begin
-			fir_read_data();
-
-			// Set user project is 1
-			cfg_read_data_expect_value = 32'h1;
-			set_user_prj('h0, 4'b0001, cfg_read_data_expect_value);
-
 			error_coef = 0;
 
 			$display("------------Start simulation-----------");
 
 			while(error_coef) begin
-				config_read_check(12'h00, 32'h00, 32'h0000_000f); // check idle = 0
+				soc_up_config_read_check(12'h00, 32'h00, 32'h0000_000f); // check idle = 0
 			end
 			$display("----Start the data_length coefficient input(AXI-lite)----");
-			config_write(12'h10, data_length);
+			soc_up_config_write(12'h10, data_length);
 
 			$display("----Write tape coefficient input(AXI-lite)----");
 			for(k=0; k< Tape_Num; k=k+1) begin
-				config_write(12'h40+4*k, coef[k]);
+				soc_up_config_write(12'h20+4*k, coef[k]); //12'h40
 			end
 
 			$display(" Check Data Length ...");
-			config_read_check(12'h10, data_length, 32'hffffffff);
+			soc_up_config_read_check(12'h10, data_length, 32'hffffffff);
 
 			$display(" Check Coefficient ...");
 			for(k=0; k < Tape_Num; k=k+1) begin
-				config_read_check(12'h40+4*k, coef[k], 32'hffffffff);
+				soc_up_config_read_check(12'h20+4*k, coef[k], 32'hffffffff); //12'h40
 			end
 			$display("----End the coefficient input(AXI-lite)----");
 
 			$display("----Start initial Data BRAM default value(AXI-Stream)----");
-			for(ii=0;ii< 11;ii=ii+1) begin
-				ss(32'b0);
-			end
-
-			#200;
 		end
 	endtask
 
-	task fir_test;
+	task fir_send_data;
 		begin
-			$display(" Start FIR");
-			@(posedge axis_clk) config_write(12'h00, 32'h0000_0001);    // ap_start = 1
-
 			$display("----Start the data input(AXI-Stream)----");
 			for(ii=0;ii< data_length;ii=ii+1) begin //(data_length-1)
-				ss(Din_list[ii]);
-				sm(golden_list[ii],ii);
+				fpga_axis_req(Din_list[ii], TID_DN_UP, 0); // Stream to slave. data, target, mode
 			end
 		end
 	endtask
 
+	task fir_wait_done;
+		begin
+			soc_up_cfg_read(12'h00, 4'b0001);
+			while (cfg_read_data_captured[1] != 1'b1) begin
+				@(posedge soc_coreclk);
+				soc_up_cfg_read(12'h00, 4'b0001);
+			end
+		end
+	endtask
+
+	task fir_check_result;
+		reg signed [31:0] firDout;
+		begin
+			error = 0;
+			for(k=0;k< data_length;k=k+1) begin //(data_length-1)
+				firDout = soc_to_fpga_axis_captured[k][31:0];
+				if (soc_to_fpga_axis_captured[k][31:0] != golden_list[k]) begin //sm_tdata
+					$display("[ERROR] [Pattern %d] Golden answer: %d, Your answer: %d", k, golden_list[k], firDout); //sm_tdata
+					error <= 1;
+				end
+				else begin
+					$display("[PASS] [Pattern %d] Golden answer: %d, Your answer: %d", k, golden_list[k], firDout); //sm_tdata
+				end
+			end
+
+			if (error == 0) begin
+				$display("===========================================================");
+				$display("================== Pass====================================");
+			end
+			else begin
+				$display("================== Fail====================================");
+			end
+		end
+	endtask
+
+
 	task fir_read_data;
-        data_length = 0;
         Din = $fopen("./samples_triangular_wave.dat","r");
         golden = $fopen("./out_gold.dat","r");
         for(m=0;m<Data_Num;m=m+1) begin
             input_data = $fscanf(Din,"%d", Din_list[m]);
             golden_data = $fscanf(golden,"%d", golden_list[m]);
-            data_length = data_length + 1;
         end
 
 		coef[0]  =  32'd0;
@@ -587,7 +617,7 @@ FSIC #(
 	endtask
 
 //  Write config register by AXI-lite
-    task config_write;
+    task soc_up_config_write;
         input [11:0]    addr;
         input [31:0]    data;
         begin
@@ -596,7 +626,7 @@ FSIC #(
     endtask
 
 //  Read config register by AXI-lite
-    task config_read_check;
+    task soc_up_config_read_check;
         input [11:0]        addr;
         input signed [31:0] exp_data;
         input [31:0]        mask;
@@ -609,38 +639,10 @@ FSIC #(
             end else begin
                 $display("OK: exp = %d, cfg_read_data_captured = %d", exp_data, cfg_read_data_captured);
             end
-        end
-    endtask
 
-//  Send 32'b in1 value to slave by stream
-//  Leave while loop when ss_tready is high
-    task ss;
-        input  signed [31:0] in1;
-        begin
-			@ (posedge fpga_coreclk);
-			fpga_as_is_tready <= 1;
-			fpga_axis_req(in1, TID_DN_UP, 0); // data, target, mode
         end
-    endtask
-
-//  Receive 32'b FIR data from slave by stream
-//  If the result does not match golden, set error high
-
-    task sm;
-        input  signed [31:0] in2; // golden data
-        input         [31:0] pcnt; // pattern count
-        begin
-            if (fpga_is_as_tdata != in2) begin //sm_tdata
-                $display("[ERROR] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, fpga_is_as_tdata); //sm_tdata
-                error <= 1;
-            end
-            else begin
-                $display("[PASS] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, fpga_is_as_tdata); //sm_tdata
-            end
-        end
-    endtask
+    endtask		
 `endif
-
 	task test001_up_soc_cfg;
 		begin
 			//Test offset 0x00 for user project
@@ -1212,10 +1214,10 @@ FSIC #(
 				@(posedge soc_coreclk);
 			end
 			
-			$display($time, "=> soc_up_cfg_read : wbs_adr=%x, wbs_sel=%b", wbs_adr, wbs_sel); 
+			//$display($time, "=> soc_up_cfg_read : wbs_adr=%x, wbs_sel=%b", wbs_adr, wbs_sel); 
 			//#1;		//add delay to make sure cfg_read_data_captured get the correct data 
 			@(soc_cfg_read_event);
-			$display($time, "=> soc_up_cfg_read : got soc_cfg_read_event"); 
+			//$display($time, "=> soc_up_cfg_read : got soc_cfg_read_event"); 
 		end
 	endtask
 
