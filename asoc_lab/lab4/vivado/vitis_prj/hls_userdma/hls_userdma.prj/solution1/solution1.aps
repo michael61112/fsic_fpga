@@ -59,7 +59,7 @@
         <value string="solution1"/>
     </name>
     <project>
-        <value string="userdma_upsb_1204_refine"/>
+        <value string="hls_userdma.prj"/>
     </project>
     <flowTarget value="vivado"/>
     <targetInfo>

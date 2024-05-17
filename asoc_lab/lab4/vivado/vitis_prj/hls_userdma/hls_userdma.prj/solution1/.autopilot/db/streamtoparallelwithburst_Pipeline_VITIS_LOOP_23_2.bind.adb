@@ -70,7 +70,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>807419168</coreId>
+						<coreId>384946288</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>62</bitwidth>
@@ -106,7 +106,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1178345534</coreId>
+						<coreId>0</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -142,7 +142,7 @@
 						<coreName>FIFO</coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>0</coreId>
+						<coreId>385922864</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>33</bitwidth>
@@ -182,7 +182,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3160253402</coreId>
+						<coreId>1702125923</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -224,7 +224,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3217061760</coreId>
+						<coreId>386356816</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -267,7 +267,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3222679696</coreId>
+						<coreId>385907056</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>62</bitwidth>
@@ -310,7 +310,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3191820272</coreId>
+						<coreId>32</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>64</bitwidth>
@@ -352,7 +352,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244019626</coreId>
+						<coreId>2926074240</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -395,7 +395,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244010106</coreId>
+						<coreId>224</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -421,7 +421,7 @@
 						<id>14</id>
 						<name>i_1</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -429,7 +429,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item class_id="11" tracking_level="0" version="0">
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second class_id="12" tracking_level="0" version="0">
 									<count>1</count>
 									<item_version>0</item_version>
@@ -451,7 +451,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244015146</coreId>
+						<coreId>385014272</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -478,7 +478,7 @@
 						<id>15</id>
 						<name>gmem0_addr</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -486,7 +486,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -508,7 +508,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244005066</coreId>
+						<coreId>385312496</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -535,7 +535,7 @@
 						<id>16</id>
 						<name>icmp_ln23</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -543,7 +543,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -592,7 +592,7 @@
 						<id>18</id>
 						<name>add_ln23</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -600,7 +600,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -649,7 +649,7 @@
 						<id>19</id>
 						<name>br_ln23</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -657,7 +657,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -679,7 +679,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3236276272</coreId>
+						<coreId>385044592</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -706,8 +706,8 @@
 						<type>0</type>
 						<id>23</id>
 						<name>inbuf_read</name>
-						<fileName>C:/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileName>/tools/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</fileName>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>145</lineNumber>
 						<contextFuncName>read</contextFuncName>
 						<contextNormFuncName>read</contextNormFuncName>
@@ -715,13 +715,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>C:/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</first>
+											<first>/tools/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</first>
 											<second>read</second>
 										</first>
 										<second>145</second>
@@ -753,7 +753,7 @@
 				<m_isOnCriticalPath>0</m_isOnCriticalPath>
 				<m_isLCDNode>0</m_isLCDNode>
 				<m_isStartOfPath>0</m_isStartOfPath>
-				<m_delay>3.52</m_delay>
+				<m_delay>3.50</m_delay>
 				<m_topoIndex>13</m_topoIndex>
 				<m_clusterGroupNumber>-1</m_clusterGroupNumber>
 			</item>
@@ -763,8 +763,8 @@
 						<type>0</type>
 						<id>24</id>
 						<name>in_val_data_filed_V</name>
-						<fileName>C:/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileName>/tools/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</fileName>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>145</lineNumber>
 						<contextFuncName>read</contextFuncName>
 						<contextNormFuncName>read</contextNormFuncName>
@@ -772,13 +772,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>C:/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</first>
+											<first>/tools/Xilinx/Vitis_HLS/2022.1/common/technology/autopilot/hls_stream_39.h</first>
 											<second>read</second>
 										</first>
 										<second>145</second>
@@ -794,7 +794,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3237296544</coreId>
+						<coreId>385588128</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -820,7 +820,7 @@
 						<id>25</id>
 						<name>gmem0_addr_write_ln26</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>26</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -828,7 +828,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -879,7 +879,7 @@
 						<id>26</id>
 						<name>i_write_ln23</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -887,7 +887,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -909,7 +909,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3243997226</coreId>
+						<coreId>385044592</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -938,7 +938,7 @@
 						<id>27</id>
 						<name>br_ln23</name>
 						<fileName>userdma.cpp</fileName>
-						<fileDirectory>D:\FSIC\hls\userdma_upsb_1204_refine</fileDirectory>
+						<fileDirectory>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</fileDirectory>
 						<lineNumber>23</lineNumber>
 						<contextFuncName>streamtoparallelwithburst</contextFuncName>
 						<contextNormFuncName>streamtoparallelwithburst</contextNormFuncName>
@@ -946,7 +946,7 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>D:\FSIC\hls\userdma_upsb_1204_refine</first>
+								<first>/home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
@@ -968,7 +968,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244017386</coreId>
+						<coreId>384939504</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1010,7 +1010,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>3244019066</coreId>
+						<coreId>385589080</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1055,7 +1055,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>807419168</coreId>
+						<coreId>385318704</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -1086,7 +1086,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1953391988</coreId>
+						<coreId>1869833586</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -1117,7 +1117,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1667835657</coreId>
+						<coreId>384940112</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>31</bitwidth>
@@ -1148,7 +1148,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>840986223</coreId>
+						<coreId>1330007625</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>4</bitwidth>
@@ -1182,7 +1182,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>0</coreId>
+					<coreId>1752440933</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>
@@ -1218,7 +1218,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>3213769232</coreId>
+					<coreId>1563440948</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>
@@ -1253,7 +1253,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>0</coreId>
+					<coreId>385848208</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>
@@ -1288,7 +1288,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>0</coreId>
+					<coreId>1397508187</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>

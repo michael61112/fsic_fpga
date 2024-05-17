@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="userdma_userdma,hls_ip_2022_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7z020-clg400-1,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=dataflow,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=-1,HLS_SYN_MEM=5,HLS_SYN_DSP=0,HLS_SYN_FF=4192,HLS_SYN_LUT=8119,HLS_VERSION=2022_1}" *)
+(* CORE_GENERATION_INFO="userdma_userdma,hls_ip_2022_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7z020-clg400-1,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=dataflow,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=-1,HLS_SYN_MEM=9,HLS_SYN_DSP=0,HLS_SYN_FF=4316,HLS_SYN_LUT=8141,HLS_VERSION=2022_1}" *)
 
 module userdma (
         s_axi_control_AWVALID,
@@ -486,13 +486,13 @@ wire   [2:0] m2s_sts_clear_c_fifo_cap;
 wire    m2s_sts_clear_c_empty_n;
 wire    inbuf_full_n;
 wire   [32:0] inbuf_dout;
-wire   [7:0] inbuf_num_data_valid;
-wire   [7:0] inbuf_fifo_cap;
+wire   [10:0] inbuf_num_data_valid;
+wire   [10:0] inbuf_fifo_cap;
 wire    inbuf_empty_n;
 wire    incount_full_n;
 wire   [31:0] incount_dout;
-wire   [3:0] incount_num_data_valid;
-wire   [3:0] incount_fifo_cap;
+wire   [6:0] incount_num_data_valid;
+wire   [6:0] incount_fifo_cap;
 wire    incount_empty_n;
 wire    s2m_len_c_full_n;
 wire   [31:0] s2m_len_c_dout;
@@ -506,13 +506,13 @@ wire   [1:0] s2m_enb_clrsts_c_fifo_cap;
 wire    s2m_enb_clrsts_c_empty_n;
 wire    outbuf_full_n;
 wire   [39:0] outbuf_dout;
-wire   [7:0] outbuf_num_data_valid;
-wire   [7:0] outbuf_fifo_cap;
+wire   [10:0] outbuf_num_data_valid;
+wire   [10:0] outbuf_fifo_cap;
 wire    outbuf_empty_n;
 wire    outcount_full_n;
 wire   [31:0] outcount_dout;
-wire   [3:0] outcount_num_data_valid;
-wire   [3:0] outcount_fifo_cap;
+wire   [6:0] outcount_num_data_valid;
+wire   [6:0] outcount_fifo_cap;
 wire    outcount_empty_n;
 wire    m2s_enb_clrsts_c_full_n;
 wire   [0:0] m2s_enb_clrsts_c_dout;
@@ -1090,7 +1090,7 @@ userdma_fifo_w1_d3_S m2s_sts_clear_c_U(
     .if_read(sendoutstream_U0_sts_clear_read)
 );
 
-userdma_fifo_w33_d128_A inbuf_U(
+userdma_fifo_w33_d1024_A inbuf_U(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
     .if_read_ce(1'b1),
@@ -1105,7 +1105,7 @@ userdma_fifo_w33_d128_A inbuf_U(
     .if_read(streamtoparallelwithburst_U0_inbuf_read)
 );
 
-userdma_fifo_w32_d8_S incount_U(
+userdma_fifo_w32_d64_A incount_U(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
     .if_read_ce(1'b1),
@@ -1150,7 +1150,7 @@ userdma_fifo_w1_d2_S s2m_enb_clrsts_c_U(
     .if_read(streamtoparallelwithburst_U0_in_en_clrsts_read)
 );
 
-userdma_fifo_w40_d128_A outbuf_U(
+userdma_fifo_w40_d1024_A outbuf_U(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
     .if_read_ce(1'b1),
@@ -1165,7 +1165,7 @@ userdma_fifo_w40_d128_A outbuf_U(
     .if_read(sendoutstream_U0_outbuf_read)
 );
 
-userdma_fifo_w32_d8_S outcount_U(
+userdma_fifo_w32_d64_A outcount_U(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
     .if_read_ce(1'b1),

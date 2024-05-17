@@ -6,7 +6,7 @@
           "label": "",
           "functionLabel": "",
           "id": "1",
-          "sourceFile": "D:\/FSIC\/hls\/userdma_upsb_1204_refine\/userdma_upsb_1204_refine\/solution1\/directives.tcl",
+          "sourceFile": "\/home\/ubuntu\/asoc\/fsic_fpga\/asoc_lab\/lab4\/vivado\/vitis_prj\/hls_userdma\/hls_userdma.prj\/solution1\/directives.tcl",
           "sourceLine": "6",
           "pragma": {
             "name": "TOP",
@@ -21,7 +21,7 @@
           "label": "",
           "functionLabel": "",
           "id": "2",
-          "sourceFile": "D:\/FSIC\/hls\/userdma_upsb_1204_refine\/userdma_upsb_1204_refine\/solution1\/csynth.tcl",
+          "sourceFile": "\/home\/ubuntu\/asoc\/fsic_fpga\/asoc_lab\/lab4\/vivado\/vitis_prj\/hls_userdma\/hls_userdma.prj\/solution1\/csynth.tcl",
           "sourceLine": "16",
           "pragma": {
             "name": "TOP",

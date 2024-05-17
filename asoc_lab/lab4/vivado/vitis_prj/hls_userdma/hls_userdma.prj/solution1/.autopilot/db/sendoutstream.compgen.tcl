@@ -113,7 +113,7 @@ eval "cg_default_interface_gen_dc { \
     sync_rst true \
     corename dc_outbuf \
     op interface \
-    ports { outbuf_dout { I 40 vector } outbuf_num_data_valid { I 8 vector } outbuf_fifo_cap { I 8 vector } outbuf_empty_n { I 1 bit } outbuf_read { O 1 bit } } \
+    ports { outbuf_dout { I 40 vector } outbuf_num_data_valid { I 11 vector } outbuf_fifo_cap { I 11 vector } outbuf_empty_n { I 1 bit } outbuf_read { O 1 bit } } \
 } "
 }
 
@@ -128,7 +128,7 @@ eval "cg_default_interface_gen_dc { \
     sync_rst true \
     corename dc_outcount48 \
     op interface \
-    ports { outcount48_dout { I 32 vector } outcount48_num_data_valid { I 4 vector } outcount48_fifo_cap { I 4 vector } outcount48_empty_n { I 1 bit } outcount48_read { O 1 bit } } \
+    ports { outcount48_dout { I 32 vector } outcount48_num_data_valid { I 7 vector } outcount48_fifo_cap { I 7 vector } outcount48_empty_n { I 1 bit } outcount48_read { O 1 bit } } \
 } "
 }
 

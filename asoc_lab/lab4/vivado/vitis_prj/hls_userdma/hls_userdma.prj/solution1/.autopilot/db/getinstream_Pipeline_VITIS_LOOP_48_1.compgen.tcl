@@ -128,7 +128,7 @@ eval "cg_default_interface_gen_dc { \
     sync_rst true \
     corename dc_inbuf \
     op interface \
-    ports { inbuf_din { O 33 vector } inbuf_num_data_valid { I 8 vector } inbuf_fifo_cap { I 8 vector } inbuf_full_n { I 1 bit } inbuf_write { O 1 bit } } \
+    ports { inbuf_din { O 33 vector } inbuf_num_data_valid { I 11 vector } inbuf_fifo_cap { I 11 vector } inbuf_full_n { I 1 bit } inbuf_write { O 1 bit } } \
 } "
 }
 
@@ -173,7 +173,7 @@ eval "cg_default_interface_gen_dc { \
     sync_rst true \
     corename dc_incount47 \
     op interface \
-    ports { incount47_din { O 32 vector } incount47_num_data_valid { I 4 vector } incount47_fifo_cap { I 4 vector } incount47_full_n { I 1 bit } incount47_write { O 1 bit } } \
+    ports { incount47_din { O 32 vector } incount47_num_data_valid { I 7 vector } incount47_fifo_cap { I 7 vector } incount47_full_n { I 1 bit } incount47_write { O 1 bit } } \
 } "
 }
 

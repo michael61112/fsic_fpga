@@ -224,14 +224,14 @@ puts "@W \[IMPL-107\] Cannot find ::AESL_LIB_VIRTEX::xil_gen_FIFO, check your pl
 
 # FIFO definition: 
 set ID 93
-set FifoName userdma_fifo_w33_d128_A
+set FifoName userdma_fifo_w33_d1024_A
 set InstName inbuf_U
 set CoreName ap_simcore_fifo
 set NumOfStage 2
 set DualClock 0
-set Depth 128
+set Depth 1024
 set DataWd 33
-set AddrWd 7
+set AddrWd 10
 set FullThresh 0
 set FanoutToFrp 0
 set FanoutToFrpRdOutII 1
@@ -298,20 +298,20 @@ puts "@W \[IMPL-107\] Cannot find ::AESL_LIB_VIRTEX::xil_gen_FIFO, check your pl
 
 # FIFO definition: 
 set ID 94
-set FifoName userdma_fifo_w32_d8_S
+set FifoName userdma_fifo_w32_d64_A
 set InstName incount_U
 set CoreName ap_simcore_fifo
 set NumOfStage 2
 set DualClock 0
-set Depth 8
+set Depth 64
 set DataWd 32
-set AddrWd 3
+set AddrWd 6
 set FullThresh 0
 set FanoutToFrp 0
 set FanoutToFrpRdOutII 1
 set EmptyThresh 0
 set RegisterMode registered
-set impl_style shiftReg
+set impl_style auto
 if {${::AESL::PGuard_simmodel_gen}} {
 if {[info proc ap_gen_simcore_fifo] == "ap_gen_simcore_fifo"} {
 eval "ap_gen_simcore_fifo { \
@@ -338,7 +338,7 @@ puts "@W \[IMPL-106\] Cannot find ap_gen_simcore_fifo, check your platform lib"
 
 
 if {${::AESL::PGuard_rtl_comp_handler}} {
-	::AP::rtl_comp_handler $FifoName BINDTYPE {storage} TYPE {fifo} IMPL {srl} ALLOW_PRAGMA 1 INSTNAME {$InstName}
+	::AP::rtl_comp_handler $FifoName BINDTYPE {storage} TYPE {fifo} IMPL {memory} ALLOW_PRAGMA 1 INSTNAME {$InstName}
 }
 
 
@@ -348,7 +348,7 @@ eval "::AESL_LIB_VIRTEX::xil_gen_FIFO { \
     id ${ID} \
     name ${FifoName} \
     instname ${InstName}
-    corename FIFO_SRL \
+    corename FIFO \
     op fifo \
     stage_num ${NumOfStage} \
     data_wd ${DataWd} \
@@ -520,14 +520,14 @@ puts "@W \[IMPL-107\] Cannot find ::AESL_LIB_VIRTEX::xil_gen_FIFO, check your pl
 
 # FIFO definition: 
 set ID 97
-set FifoName userdma_fifo_w40_d128_A
+set FifoName userdma_fifo_w40_d1024_A
 set InstName outbuf_U
 set CoreName ap_simcore_fifo
 set NumOfStage 2
 set DualClock 0
-set Depth 128
+set Depth 1024
 set DataWd 40
-set AddrWd 7
+set AddrWd 10
 set FullThresh 0
 set FanoutToFrp 0
 set FanoutToFrpRdOutII 1
@@ -594,20 +594,20 @@ puts "@W \[IMPL-107\] Cannot find ::AESL_LIB_VIRTEX::xil_gen_FIFO, check your pl
 
 # FIFO definition: 
 set ID 98
-set FifoName userdma_fifo_w32_d8_S
+set FifoName userdma_fifo_w32_d64_A
 set InstName outcount_U
 set CoreName ap_simcore_fifo
 set NumOfStage 2
 set DualClock 0
-set Depth 8
+set Depth 64
 set DataWd 32
-set AddrWd 3
+set AddrWd 6
 set FullThresh 0
 set FanoutToFrp 0
 set FanoutToFrpRdOutII 1
 set EmptyThresh 0
 set RegisterMode registered
-set impl_style shiftReg
+set impl_style auto
 if {${::AESL::PGuard_simmodel_gen}} {
 if {[info proc ap_gen_simcore_fifo] == "ap_gen_simcore_fifo"} {
 eval "ap_gen_simcore_fifo { \
@@ -634,7 +634,7 @@ puts "@W \[IMPL-106\] Cannot find ap_gen_simcore_fifo, check your platform lib"
 
 
 if {${::AESL::PGuard_rtl_comp_handler}} {
-	::AP::rtl_comp_handler $FifoName BINDTYPE {storage} TYPE {fifo} IMPL {srl} ALLOW_PRAGMA 1 INSTNAME {$InstName}
+	::AP::rtl_comp_handler $FifoName BINDTYPE {storage} TYPE {fifo} IMPL {memory} ALLOW_PRAGMA 1 INSTNAME {$InstName}
 }
 
 
@@ -644,7 +644,7 @@ eval "::AESL_LIB_VIRTEX::xil_gen_FIFO { \
     id ${ID} \
     name ${FifoName} \
     instname ${InstName}
-    corename FIFO_SRL \
+    corename FIFO \
     op fifo \
     stage_num ${NumOfStage} \
     data_wd ${DataWd} \

@@ -18,8 +18,8 @@ port (
     ap_idle : OUT STD_LOGIC;
     ap_ready : OUT STD_LOGIC;
     inbuf_dout : IN STD_LOGIC_VECTOR (32 downto 0);
-    inbuf_num_data_valid : IN STD_LOGIC_VECTOR (7 downto 0);
-    inbuf_fifo_cap : IN STD_LOGIC_VECTOR (7 downto 0);
+    inbuf_num_data_valid : IN STD_LOGIC_VECTOR (10 downto 0);
+    inbuf_fifo_cap : IN STD_LOGIC_VECTOR (10 downto 0);
     inbuf_empty_n : IN STD_LOGIC;
     inbuf_read : OUT STD_LOGIC;
     m_axi_gmem0_AWVALID : OUT STD_LOGIC;

@@ -44,7 +44,7 @@ set SCTraceOption all
 set TargetInfo xc7z020:-clg400:-1
 set SourceFiles {sc {} c ../../userdma.cpp}
 set SourceFlags {sc {} c {{}}}
-set DirectiveFile D:/FSIC/hls/userdma_upsb_1204_refine/userdma_upsb_1204_refine/solution1/solution1.directive
+set DirectiveFile /home/ubuntu/asoc/fsic_fpga/asoc_lab/lab4/vivado/vitis_prj/hls_userdma/hls_userdma.prj/solution1/solution1.directive
 set TBFiles {verilog ../../userdma_test.cpp bc ../../userdma_test.cpp vhdl ../../userdma_test.cpp sc ../../userdma_test.cpp cas ../../userdma_test.cpp c {}}
 set SpecLanguage C
 set TVInFiles {bc {} c {} sc {} cas {} vhdl {} verilog {}}

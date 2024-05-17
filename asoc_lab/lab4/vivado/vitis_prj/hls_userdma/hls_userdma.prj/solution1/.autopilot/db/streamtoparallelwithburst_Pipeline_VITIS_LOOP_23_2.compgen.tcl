@@ -63,7 +63,7 @@ eval "cg_default_interface_gen_dc { \
     sync_rst true \
     corename dc_inbuf \
     op interface \
-    ports { inbuf_dout { I 33 vector } inbuf_num_data_valid { I 8 vector } inbuf_fifo_cap { I 8 vector } inbuf_empty_n { I 1 bit } inbuf_read { O 1 bit } } \
+    ports { inbuf_dout { I 33 vector } inbuf_num_data_valid { I 11 vector } inbuf_fifo_cap { I 11 vector } inbuf_empty_n { I 1 bit } inbuf_read { O 1 bit } } \
 } "
 }
 

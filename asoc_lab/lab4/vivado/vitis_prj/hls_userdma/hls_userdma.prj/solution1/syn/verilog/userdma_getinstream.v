@@ -73,13 +73,13 @@ output  [0:0] s2m_err;
 output   s2m_err_ap_vld;
 input  [31:0] in_Img_width;
 output  [32:0] inbuf_din;
-input  [7:0] inbuf_num_data_valid;
-input  [7:0] inbuf_fifo_cap;
+input  [10:0] inbuf_num_data_valid;
+input  [10:0] inbuf_fifo_cap;
 input   inbuf_full_n;
 output   inbuf_write;
 output  [31:0] incount47_din;
-input  [3:0] incount47_num_data_valid;
-input  [3:0] incount47_fifo_cap;
+input  [6:0] incount47_num_data_valid;
+input  [6:0] incount47_fifo_cap;
 input   incount47_full_n;
 output   incount47_write;
 output  [31:0] s2m_len_c_din;
@@ -141,7 +141,7 @@ wire   [31:0] add_ln48_fu_174_p2;
 wire   [0:0] empty_fu_180_p2;
 wire   [0:0] tmp_fu_216_p3;
 wire   [0:0] xor_ln1069_fu_224_p2;
-wire   [0:0] tmp_2_fu_236_p3;
+wire   [0:0] tmp_3_fu_236_p3;
 wire   [0:0] and_ln1065_fu_230_p2;
 wire   [0:0] xor_ln58_fu_244_p2;
 reg   [2:0] ap_NS_fsm;
@@ -189,13 +189,13 @@ userdma_getinstream_Pipeline_VITIS_LOOP_48_1 grp_getinstream_Pipeline_VITIS_LOOP
     .ap_ready(grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_ap_ready),
     .inStreamTop_TVALID(inStreamTop_TVALID_int_regslice),
     .inbuf_din(grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_inbuf_din),
-    .inbuf_num_data_valid(8'd0),
-    .inbuf_fifo_cap(8'd0),
+    .inbuf_num_data_valid(11'd0),
+    .inbuf_fifo_cap(11'd0),
     .inbuf_full_n(inbuf_full_n),
     .inbuf_write(grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_inbuf_write),
     .incount47_din(grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_incount47_din),
-    .incount47_num_data_valid(4'd0),
-    .incount47_fifo_cap(4'd0),
+    .incount47_num_data_valid(7'd0),
+    .incount47_fifo_cap(7'd0),
     .incount47_full_n(incount47_full_n),
     .incount47_write(grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_incount47_write),
     .in_len_V_load(in_len_V),
@@ -533,7 +533,7 @@ assign s2m_len_c_din = in_s2m_len;
 
 assign sub_i_i52_fu_162_p2 = ($signed(in_Img_width_cast_fu_158_p1) + $signed(33'd8589934591));
 
-assign tmp_2_fu_236_p3 = grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_tmp_user_V_out[32'd2];
+assign tmp_3_fu_236_p3 = grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_tmp_user_V_out[32'd2];
 
 assign tmp_fu_216_p3 = grp_getinstream_Pipeline_VITIS_LOOP_48_1_fu_132_tmp_user_V_out[32'd3];
 
@@ -541,6 +541,6 @@ assign umax_fu_186_p3 = ((empty_fu_180_p2[0:0] == 1'b1) ? in_s2m_len : add_ln48_
 
 assign xor_ln1069_fu_224_p2 = (tmp_fu_216_p3 ^ 1'd1);
 
-assign xor_ln58_fu_244_p2 = (tmp_2_fu_236_p3 ^ icmp_ln1065_reg_293);
+assign xor_ln58_fu_244_p2 = (tmp_3_fu_236_p3 ^ icmp_ln1065_reg_293);
 
 endmodule //userdma_getinstream
